@@ -17,7 +17,6 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.client.Firebase;
@@ -27,21 +26,23 @@ import java.util.ArrayList;
 public class Launch extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private final String DB_URL = "https://locatemass-v1.firebaseio.com/City_1";
-
+    private final String DB_URL = "https://locatemass-v1.firebaseio.com/City_1/Church_1";
+    Button buttonSave;
+    EditText editChurchName, editLocation, editRite, editAddress, editGPS, editMassTimes, editOtherService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_launch);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+
         setSupportActionBar(toolbar);
         Firebase.setAndroidContext(this);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 showDialog();
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
@@ -71,37 +72,20 @@ public class Launch extends AppCompatActivity
         });
 
 
-
-
     }
 
     private void showDialog() {
         Dialog dialog = new Dialog(this);
         dialog.setTitle("Add New Church");
         dialog.setContentView(R.layout.dialog_layout);
-        Button buttonSave =(Button)findViewById(R.id.buttonSave);
-        buttonSave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                EditText editChurchName = (EditText) findViewById(R.id.editChurchName);
-                EditText editLocation = (EditText)  findViewById(R.id.editLocation);
-                EditText editRite=(EditText) findViewById(R.id.editRite);
-                EditText editAddress = (EditText)findViewById(R.id.editAddress);
-                EditText editGPS =(EditText) findViewById(R.id.editGPS);
-                EditText editMassTimes = (EditText)findViewById(R.id.editMassTimes);
-                
+        editChurchName = (EditText) findViewById(R.id.editChurchName);
+        editLocation = (EditText) findViewById(R.id.editLocation);
+        editRite = (EditText) findViewById(R.id.editRite);
+        editAddress = (EditText) findViewById(R.id.editAddress);
+        editGPS = (EditText) findViewById(R.id.editGPS);
+        editMassTimes = (EditText) findViewById(R.id.editMassTimes);
+        editOtherService = (EditText) findViewById(R.id.editOtherServices);
 
-
-
-                Firebase myFirebaseRef = new Firebase(DB_URL);
-                myFirebaseRef.child("name").setValue("St. Antony Chapel");
-                myFirebaseRef.child("location").setValue("Marathahalli");
-                myFirebaseRef.child("name").setValue("");
-                myFirebaseRef.child("name").setValue("");
-                myFirebaseRef.child("name").setValue("");
-                myFirebaseRef.child("name").setValue("");
-            }
-        });
         dialog.show();
     }
 
@@ -193,7 +177,7 @@ public class Launch extends AppCompatActivity
     }
 
     private ArrayList<SearchResults> GetSearchResults() {
-        ArrayList<SearchResults> results = new ArrayList<SearchResults>();
+        ArrayList<SearchResults> results = new ArrayList<>();
 
         SearchResults sr1 = new SearchResults();
         sr1.setName("John Smith");
@@ -220,5 +204,19 @@ public class Launch extends AppCompatActivity
         results.add(sr1);
 
         return results;
+    }
+
+    public void saveChurchDetails(View view) {
+        Firebase myFirebaseRef = new Firebase(DB_URL);
+        Firebase.setAndroidContext(getApplicationContext());
+
+        myFirebaseRef.child("church_name").setValue(editChurchName.getText().toString());
+        myFirebaseRef.child("location").setValue(editLocation.getText().toString());
+        myFirebaseRef.child("rite").setValue(editRite.getText().toString());
+        myFirebaseRef.child("address").setValue(editAddress.getText().toString());
+        myFirebaseRef.child("gps").setValue(editGPS.getText().toString());
+        myFirebaseRef.child("mass_times").setValue(editGPS.getText().toString());
+        myFirebaseRef.child("other_services").setValue(editOtherService.getText().toString());
+        Toast.makeText(getApplicationContext(), "New Church Added", Toast.LENGTH_SHORT).show();
     }
 }
